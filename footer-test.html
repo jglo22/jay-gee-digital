@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta charset="utf-8" />
+<title>Footer Test — jay-gee.digital</title>
+
+<!-- DUPLICATE: Google Fonts — main site loads Lato + Playfair Display via WebFont.load() in index.html -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;700;800;900&family=Playfair+Display:wght@400;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/*
+ * FOOTER COMPONENT — Figma Export
+ * ================================
+ * Standalone preview at /footer-test.html
+ *
+ * STYLE CONSOLIDATION NOTES (vs index.html / main site):
+ * -------------------------------------------------------
+ * When integrating into the main site, the following can be removed:
+ *
+ *   FONTS:      Google Fonts <link> tags above — main site loads Lato + Playfair Display
+ *               via WebFont.load() in the <head>.
+ *
+ *   RESET:      Meyer reset import below — main site uses Webflow's built-in normalize.
+ *               The global *, html, body resets also overlap with Webflow defaults.
+ *
+ *   KEPT AS-IS: CSS custom properties (--brand1-jg-grey*, --accent-*, typography tokens)
+ *               are NEW — the main site uses Webflow's external .css file with its own
+ *               class-based theming, not CSS variables. These tokens are the canonical
+ *               Figma design tokens and should eventually replace Webflow's values.
+ *
+ *   KEPT AS-IS: All .footer-wrapper component styles are NEW Figma component classes.
+ *               The main site footer uses different classes (.jg-footer, .footer-title,
+ *               .jg-footer-link, .jg-footer-sub-head, .legal, ._2-deg-* decorators).
+ */
+
+/* === globals.css (from Figma export) === */
+/* DUPLICATE: Meyer reset — main site uses Webflow's normalize instead */
+@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+
+/* DUPLICATE: base resets — Webflow applies similar box-sizing and margin resets globally */
+* {
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+html, body {
+  margin: 0px;
+  height: 100%;
+}
+
+/* DUPLICATE: Webflow sets similar focus and link defaults */
+button:focus-visible {
+  outline: 2px solid #4a90e2 !important;
+  outline: -webkit-focus-ring-color auto 5px !important;
+}
+a {
+  text-decoration: none;
+}
+
+/* === styleguide.css (Figma design tokens) === */
+/* NEW: These CSS variables do NOT exist in the main site (which uses Webflow's external CSS).
+   These are the canonical Figma design tokens for the brand palette and typography. */
+:root {
+  --jg-system-coloursgrey000: rgba(0, 0, 0, 1);
+  --jg-system-coloursgrey333: rgba(51, 51, 51, 1);
+  --jg-system-coloursgrey666: rgba(102, 102, 102, 1);
+  --jg-system-coloursgrey999: rgba(153, 153, 153, 1);
+  --jg-system-coloursgreyccc: rgba(204, 204, 204, 1);
+  --jg-system-coloursgreyfff: rgba(255, 255, 255, 1);
+  --jg-system-colourserrordefault: rgba(246, 29, 29, 1);
+  --brand1-jg-grey900: rgba(16, 16, 16, 1);
+  --brand1-jg-grey800: rgba(42, 42, 41, 1);
+  --brand1-jg-grey700: rgba(67, 66, 65, 1);
+  --brand1-jg-grey600: rgba(92, 91, 89, 1);
+  --brand1-jg-grey500: rgba(118, 117, 115, 1);
+  --brand1-jg-grey400: rgba(146, 145, 141, 1);
+  --brand1-jg-grey300: rgba(183, 182, 179, 1);
+  --brand1-jg-grey200: rgba(215, 214, 211, 1);
+  --brand1-jg-grey100: rgba(245, 244, 242, 1);
+  --brand1-jg-grey50: rgba(254, 253, 251, 1);
+  --accent-1dark: rgba(158, 135, 78, 1);
+  --accent-1mid: rgba(235, 190, 80, 1);
+  --accent-1light: rgba(247, 228, 182, 1);
+  --accent-2dark: rgba(147, 60, 38, 1);
+  --accent-2mid: rgba(206, 98, 71, 1);
+  --accent-2light: rgba(230, 173, 159, 1);
+
+  /* Typography tokens — NEW: not present in main site */
+  --contact-block-mob-title-font-family: "Playfair Display", Helvetica;
+  --contact-block-mob-title-font-weight: 900;
+  --contact-block-mob-title-font-size: 40.5px;
+  --contact-block-mob-title-letter-spacing: 0px;
+  --contact-block-mob-title-line-height: 60px;
+  --contact-block-mob-title-font-style: normal;
+  --contact-block-mob-secondary-text-font-family: "Lato", Helvetica;
+  --contact-block-mob-secondary-text-font-weight: 300;
+  --contact-block-mob-secondary-text-font-size: 17.7px;
+  --contact-block-mob-secondary-text-letter-spacing: 0px;
+  --contact-block-mob-secondary-text-line-height: 20px;
+  --contact-block-mob-secondary-text-font-style: normal;
+  --footer-desk-legal-font-family: "Lato", Helvetica;
+  --footer-desk-legal-font-weight: 300;
+  --footer-desk-legal-font-size: 11.57px;
+  --footer-desk-legal-letter-spacing: 0px;
+  --footer-desk-legal-line-height: 20px;
+  --footer-desk-legal-font-style: normal;
+  --footer-desk-title-font-family: "Lato", Helvetica;
+  --footer-desk-title-font-weight: 700;
+  --footer-desk-title-font-size: 15.8px;
+  --footer-desk-title-letter-spacing: -0.316px;
+  --footer-desk-title-line-height: 40px;
+  --footer-desk-title-font-style: normal;
+  --footer-desk-link-font-family: "Lato", Helvetica;
+  --footer-desk-link-font-weight: 400;
+  --footer-desk-link-font-size: 15.8px;
+  --footer-desk-link-letter-spacing: 0px;
+  --footer-desk-link-line-height: 40px;
+  --footer-desk-link-font-style: normal;
+  --form-label-font-family: "Lato", Helvetica;
+  --form-label-font-weight: 400;
+  --form-label-font-size: 20px;
+  --form-label-letter-spacing: 0px;
+  --form-label-line-height: normal;
+  --form-label-font-style: normal;
+  --form-default-text-font-family: "Lato", Helvetica;
+  --form-default-text-font-weight: 400;
+  --form-default-text-font-size: 20px;
+  --form-default-text-letter-spacing: 0px;
+  --form-default-text-line-height: 20px;
+  --form-default-text-font-style: normal;
+}
+
+/* === style.css (Figma footer component) === */
+/* NEW: All .footer-wrapper classes are Figma component styles.
+   Main site uses different footer classes: .jg-footer, .footer-title,
+   .jg-footer-link, .jg-footer-sub-head, .legal, ._2-deg-top-generic, ._2-deg-btm-footer */
+
+.footer-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.footer-wrapper .footer {
+  overflow: hidden;
+  border-bottom-width: 0.25px;
+  border-bottom-style: solid;
+  border-color: var(--brand1-jg-grey900);
+  display: flex;
+  flex-direction: column;
+  max-width: 1350px;
+  align-items: flex-start;
+  position: relative;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.footer-wrapper .top-edge-wrapper {
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  height: 30px;
+  overflow: hidden;
+}
+
+.footer-wrapper .top-edge-wrapper img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.footer-wrapper .content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+  background-color: var(--brand1-jg-grey900);
+}
+
+.footer-wrapper .sub {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 40px;
+  padding: 40px 0px 0px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.footer-wrapper .text-wrapper {
+  align-items: flex-start;
+  padding: 0px 20px;
+  display: flex;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.footer-wrapper .div {
+  position: relative;
+  flex: 1;
+  margin-top: -1px;
+  font-family: var(--contact-block-mob-title-font-family);
+  font-weight: var(--contact-block-mob-title-font-weight);
+  color: var(--brand1-jg-grey200);
+  font-size: var(--contact-block-mob-title-font-size);
+  letter-spacing: var(--contact-block-mob-title-letter-spacing);
+  line-height: var(--contact-block-mob-title-line-height);
+  font-style: var(--contact-block-mob-title-font-style);
+}
+
+.footer-wrapper .element-col {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.footer-wrapper .form-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 10px 20px 40px;
+  position: relative;
+  flex: 1;
+  flex-grow: 1;
+  background-color: var(--brand1-jg-grey900);
+}
+
+.footer-wrapper .div-2 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.footer-wrapper .jg-label-MASTER {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0px;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.footer-wrapper .text-wrapper-2 {
+  position: relative;
+  width: fit-content;
+  margin-top: -1px;
+  font-family: var(--form-label-font-family);
+  font-weight: var(--form-label-font-weight);
+  color: var(--brand1-jg-grey200);
+  font-size: var(--form-label-font-size);
+  letter-spacing: var(--form-label-letter-spacing);
+  line-height: var(--form-label-line-height);
+  white-space: nowrap;
+  font-style: var(--form-label-font-style);
+}
+
+.footer-wrapper .text-field {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+  display: flex;
+  position: relative;
+}
+
+.footer-wrapper .jg-form-field-MASTER {
+  display: flex;
+  min-height: 50px;
+  align-items: flex-start;
+  padding: 15px 10px 0px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+  background-color: var(--jg-system-coloursgreyfff);
+  border-radius: 5px;
+  border: 1px solid;
+  border-color: var(--brand1-jg-grey300);
+}
+
+.footer-wrapper .select-option {
+  flex-grow: 1;
+  position: relative;
+  border: none;
+  background: none;
+  flex: 1;
+  margin-top: -1px;
+  font-family: var(--form-default-text-font-family);
+  font-weight: var(--form-default-text-font-weight);
+  color: var(--jg-system-coloursgrey000);
+  font-size: var(--form-default-text-font-size);
+  letter-spacing: var(--form-default-text-letter-spacing);
+  line-height: var(--form-default-text-line-height);
+  font-style: var(--form-default-text-font-style);
+  padding: 0;
+}
+
+.footer-wrapper .select-option-wrapper {
+  display: flex;
+  min-height: 200px;
+  align-items: flex-start;
+  padding: 15px 10px 0px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+  background-color: var(--jg-system-coloursgreyfff);
+  border-radius: 5px;
+  border: 1px solid;
+  border-color: var(--brand1-jg-grey300);
+}
+
+.footer-wrapper .button {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  position: relative;
+  flex: 0 0 auto;
+  background-color: var(--brand1-jg-grey50);
+  cursor: pointer;
+}
+
+.footer-wrapper .button:hover {
+  opacity: 0.9;
+}
+
+.footer-wrapper .contact {
+  position: relative;
+  width: fit-content;
+  font-family: "Lato", Helvetica;
+  font-weight: 500;
+  color: var(--brand1-jg-grey900);
+  font-size: 20px;
+  letter-spacing: 0.2px;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.footer-wrapper .icon-master-small {
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+
+.footer-wrapper .typ-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 40px 20px 0px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.footer-wrapper .div-wrapper {
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  display: flex;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.footer-wrapper .p {
+  position: relative;
+  flex: 1;
+  margin-top: -1px;
+  font-family: var(--contact-block-mob-secondary-text-font-family);
+  font-weight: var(--contact-block-mob-secondary-text-font-weight);
+  color: var(--brand1-jg-grey200);
+  font-size: var(--contact-block-mob-secondary-text-font-size);
+  letter-spacing: var(--contact-block-mob-secondary-text-letter-spacing);
+  line-height: var(--contact-block-mob-secondary-text-line-height);
+  font-style: var(--contact-block-mob-secondary-text-font-style);
+}
+
+.footer-wrapper .p a {
+  color: var(--brand1-jg-grey200);
+  text-decoration: underline;
+}
+
+.footer-wrapper .frame {
+  display: flex;
+  align-items: flex-start;
+  padding: 10px 20px;
+  position: relative;
+  flex: 1;
+  flex-grow: 1;
+}
+
+.footer-wrapper .frame-2 {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  flex: 1;
+  flex-grow: 1;
+}
+
+.footer-wrapper .text-wrapper-3 {
+  font-family: var(--footer-desk-title-font-family);
+  font-weight: var(--footer-desk-title-font-weight);
+  color: var(--brand1-jg-grey200);
+  letter-spacing: var(--footer-desk-title-letter-spacing);
+  font-size: var(--footer-desk-title-font-size);
+  line-height: var(--footer-desk-title-line-height);
+  white-space: nowrap;
+  font-style: var(--footer-desk-title-font-style);
+}
+
+.footer-wrapper .footer-link {
+  font-family: var(--footer-desk-link-font-family);
+  font-weight: var(--footer-desk-link-font-weight);
+  color: var(--brand1-jg-grey100);
+  letter-spacing: var(--footer-desk-link-letter-spacing);
+  text-decoration: underline;
+  font-size: var(--footer-desk-link-font-size);
+  line-height: var(--footer-desk-link-line-height);
+  white-space: nowrap;
+  font-style: var(--footer-desk-link-font-style);
+  display: block;
+}
+
+.footer-wrapper .footer-link:hover {
+  color: var(--brand1-jg-grey50);
+}
+
+.footer-wrapper .btm-edge-wrapper {
+  position: relative;
+  width: 100%;
+  height: 30px;
+  background-color: var(--brand1-jg-grey700);
+  overflow: hidden;
+}
+
+.footer-wrapper .btm-edge-wrapper img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.footer-wrapper .footer-2 {
+  gap: 40px;
+  padding: 20px 0px;
+  background-color: var(--brand1-jg-grey700);
+  display: flex;
+  flex-direction: column;
+  max-width: 1350px;
+  align-items: flex-start;
+  position: relative;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.footer-wrapper .jim-glodkowski-is-wrapper {
+  align-items: flex-start;
+  gap: 10px;
+  padding: 0px 20px;
+  display: flex;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.footer-wrapper .jim-glodkowski-is {
+  position: relative;
+  flex: 1;
+  margin-top: -1px;
+  font-family: var(--footer-desk-legal-font-family);
+  font-weight: var(--footer-desk-legal-font-weight);
+  color: var(--brand1-jg-grey200);
+  font-size: var(--footer-desk-legal-font-size);
+  text-align: center;
+  letter-spacing: var(--footer-desk-legal-letter-spacing);
+  line-height: var(--footer-desk-legal-line-height);
+  font-style: var(--footer-desk-legal-font-style);
+}
+
+/* Placeholder spacer for standalone preview */
+.page-spacer {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Lato", Helvetica;
+  font-size: 14px;
+  color: #999;
+  background: var(--brand1-jg-grey50);
+}
+</style>
+</head>
+<body>
+
+<!-- Spacer to simulate page content -->
+<div class="page-spacer">[ page content above ]</div>
+
+<!-- FOOTER COMPONENT — from Figma export -->
+<div class="footer-wrapper">
+  <div class="footer">
+    <div class="top-edge-wrapper"><img src="footer-figma/images/rectangle-23-4.svg" alt="" /></div>
+    <div class="content-wrapper">
+      <div class="sub">
+        <div class="text-wrapper">
+          <div class="div">Get in touch</div>
+        </div>
+      </div>
+      <div class="element-col">
+        <div class="form-wrapper">
+          <!-- Form fields -->
+          <div class="div-2">
+            <div class="jg-label-MASTER">
+              <div class="text-wrapper-2">Name</div>
+            </div>
+            <div class="text-field">
+              <div class="jg-form-field-MASTER">
+                <input class="select-option" placeholder="Your name" type="text" />
+              </div>
+            </div>
+          </div>
+          <div class="div-2">
+            <div class="jg-label-MASTER">
+              <div class="text-wrapper-2">Email</div>
+            </div>
+            <div class="text-field">
+              <div class="jg-form-field-MASTER">
+                <input class="select-option" placeholder="Your email" type="email" />
+              </div>
+            </div>
+          </div>
+          <div class="div-2">
+            <div class="jg-label-MASTER">
+              <div class="text-wrapper-2">Message</div>
+            </div>
+            <div class="text-field">
+              <div class="select-option-wrapper">
+                <textarea class="select-option" placeholder="How can I help?" style="resize: vertical; min-height: 170px;"></textarea>
+              </div>
+            </div>
+          </div>
+          <button class="button">
+            <div class="contact">CONTACT ME</div>
+            <img class="icon-master-small" src="footer-figma/images/arrow_downward_alt-31.svg" alt="" />
+          </button>
+          <div class="typ-body">
+            <div class="div-wrapper">
+              <p class="p">You can also contact me via <a href="https://www.linkedin.com/in/jim-glodkowski/" target="_blank">LinkedIn</a></p>
+            </div>
+          </div>
+        </div>
+        <div class="frame">
+          <div class="frame-2">
+            <div class="text-wrapper-3">HOMEPAGE</div>
+            <a href="index.html" class="footer-link">Home</a>
+            <a href="index.html#skillset" class="footer-link">Skillset</a>
+            <a href="index.html#testimonials" class="footer-link">Testimonials</a>
+          </div>
+          <div class="frame-2">
+            <div class="text-wrapper-3">CASE STUDIES</div>
+            <a href="case-studies/recursion.html" class="footer-link">Recursion (Exscientia)</a>
+            <a href="case-studies/ccoms.html" class="footer-link">CCOMS</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="btm-edge-wrapper"><img src="footer-figma/images/rectangle-23-47.svg" alt="" /></div>
+    <div class="footer-2">
+      <div class="jim-glodkowski-is-wrapper">
+        <p class="jim-glodkowski-is">jay-gee.digital is the trading name of Digital Demystified Ltd, a company registered in England and Wales (Company No. 08145843). 44 Crantock Road, London, SE6 2QP.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
